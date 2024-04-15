@@ -10,7 +10,7 @@ clj -M -m cljs.main -d "victoraldecoa.github.io/out" -c victoraldecoa.static-web
 Compile
 -------
 ```bash
-clj -m cljs.main -O advanced -c "demo.static-website"
+clj -M -m cljs.main -O advanced -c "victoraldecoa.static-website"
 ```
 
 Based on

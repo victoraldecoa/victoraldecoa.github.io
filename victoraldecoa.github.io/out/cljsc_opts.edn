@@ -1,1 +1,0 @@
-{:browser-repl true, :output-dir "victoraldecoa.github.io/out", :main victoraldecoa.static-website, :output-to "victoraldecoa.github.io/out/main.js", :aot-cache true}

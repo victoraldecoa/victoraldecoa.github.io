@@ -155,7 +155,6 @@ class SafeStyle {
    *     `style`.
    */
   static fromConstant(style) {
-    'use strict';
     const styleString = Const.unwrap(style);
     if (styleString.length === 0) {
       return SafeStyle.EMPTY;
@@ -195,7 +194,6 @@ class SafeStyle {
    * @override
    */
   getTypedStringValue() {
-    'use strict';
     return this.privateDoNotAccessOrElseSafeStyleWrappedValue_;
   }
 
@@ -211,7 +209,6 @@ class SafeStyle {
    * @override
    */
   toString() {
-    'use strict';
     return this.privateDoNotAccessOrElseSafeStyleWrappedValue_.toString();
   }
 
@@ -227,7 +224,6 @@ class SafeStyle {
    *     `AssertionError`.
    */
   static unwrap(safeStyle) {
-    'use strict';
     // Perform additional Run-time type-checking to ensure that
     // safeStyle is indeed an instance of the expected type.  This
     // provides some additional protection against security bugs due to
@@ -254,7 +250,6 @@ class SafeStyle {
    * @package
    */
   static createSafeStyleSecurityPrivateDoNotAccessOrElse(style) {
-    'use strict';
     return new SafeStyle(style, CONSTRUCTOR_TOKEN_PRIVATE);
   }
 
@@ -276,7 +271,6 @@ class SafeStyle {
    *     SafeStyle.INNOCUOUS_STRING.
    */
   static create(map) {
-    'use strict';
     let style = '';
     for (let name in map) {
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty#Using_hasOwnProperty_as_a_property_name
@@ -309,14 +303,12 @@ class SafeStyle {
    * @return {!SafeStyle}
    */
   static concat(var_args) {
-    'use strict';
     let style = '';
 
     /**
      * @param {!SafeStyle|!Array<!SafeStyle>} argument
      */
     const addArgument = argument => {
-      'use strict';
       if (Array.isArray(argument)) {
         argument.forEach(addArgument);
       } else {
@@ -373,7 +365,6 @@ SafeStyle.PropertyMap;
  * @return {string}
  */
 function sanitizePropertyValue(value) {
-  'use strict';
   if (value instanceof SafeUrl) {
     const url = SafeUrl.unwrap(value);
     return 'url("' + url.replace(/</g, '%3c').replace(/[\\"]/g, '\\$&') + '")';
@@ -396,7 +387,6 @@ function sanitizePropertyValue(value) {
  * @return {string}
  */
 function sanitizePropertyValueString(value) {
-  'use strict';
   // Some CSS property values permit nested functions. We allow one level of
   // nesting, and all nested functions must also be in the FUNCTIONS_RE_ list.
   const valueWithoutFunctions = value.replace(FUNCTIONS_RE, '$1')
@@ -433,7 +423,6 @@ function sanitizePropertyValueString(value) {
  *     balancedness.
  */
 function hasBalancedQuotes(value) {
-  'use strict';
   let outsideSingle = true;
   let outsideDouble = true;
   for (let i = 0; i < value.length; i++) {
@@ -460,7 +449,6 @@ function hasBalancedQuotes(value) {
  *     bracket balancedness.
  */
 function hasBalancedSquareBrackets(value) {
-  'use strict';
   let outside = true;
   const tokenRe = /^[-_a-zA-Z0-9]$/;
   for (let i = 0; i < value.length; i++) {
@@ -483,7 +471,7 @@ function hasBalancedSquareBrackets(value) {
  * Characters allowed in VALUE_RE.
  * @type {string}
  */
-const VALUE_ALLOWED_CHARS = '[-,."\'%_!# a-zA-Z0-9\\[\\]]';
+const VALUE_ALLOWED_CHARS = '[-+,."\'%_!#/ a-zA-Z0-9\\[\\]]';
 
 
 /**
@@ -530,10 +518,12 @@ const ALLOWED_FUNCTIONS = [
   'linear-gradient',
   'matrix',
   'minmax',
+  'radial-gradient',
   'repeat',
   'rgb',
   'rgba',
   '(rotate|scale|translate)(X|Y|Z|3d)?',
+  'steps',
   'var',
 ];
 
@@ -544,7 +534,7 @@ const ALLOWED_FUNCTIONS = [
  */
 const FUNCTIONS_RE = new RegExp(
     '\\b(' + ALLOWED_FUNCTIONS.join('|') + ')' +
-        '\\([-+*/0-9a-z.%#\\[\\], ]+\\)',
+        '\\([-+*/0-9a-zA-Z.%#\\[\\], ]+\\)',
     'g');
 
 
@@ -567,12 +557,9 @@ const COMMENT_RE = /\/\*/;
  * @return {string}
  */
 function sanitizeUrl(value) {
-  'use strict';
   return value.replace(URL_RE, (match, before, url, after) => {
-    'use strict';
     let quote = '';
     url = url.replace(/^(['"])(.*)\1$/, (match, start, inside) => {
-      'use strict';
       quote = start;
       return inside;
     });

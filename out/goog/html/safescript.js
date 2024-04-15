@@ -88,6 +88,20 @@ class SafeScript {
   }
 
   /**
+   * Returns a string-representation of this value.
+   *
+   * To obtain the actual string value wrapped in a SafeScript, use
+   * `SafeScript.unwrap`.
+   *
+   * @return {string}
+   * @see SafeScript#unwrap
+   * @override
+   */
+  toString() {
+    return this.privateDoNotAccessOrElseSafeScriptWrappedValue_.toString();
+  }
+
+  /**
    * Creates a SafeScript object from a compile-time constant string.
    *
    * @param {!Const} script A compile-time-constant string from which to create
@@ -200,26 +214,14 @@ class SafeScript {
    * @package
    */
   static createSafeScriptSecurityPrivateDoNotAccessOrElse(script) {
+    /** @noinline */
+    const noinlineScript = script;
     const policy = trustedtypes.getPolicyPrivateDoNotAccessOrElse();
-    const trustedScript = policy ? policy.createScript(script) : script;
+    const trustedScript =
+        policy ? policy.createScript(noinlineScript) : noinlineScript;
     return new SafeScript(trustedScript, CONSTRUCTOR_TOKEN_PRIVATE);
   }
 }
-
-/**
- * Returns a string-representation of this value.
- *
- * To obtain the actual string value wrapped in a SafeScript, use
- * `SafeScript.unwrap`.
- *
- * @return {string}
- * @see SafeScript#unwrap
- * @override
- */
-SafeScript.prototype.toString = function() {
-  return this.privateDoNotAccessOrElseSafeScriptWrappedValue_.toString();
-};
-
 
 /**
  * A SafeScript instance corresponding to the empty string.
